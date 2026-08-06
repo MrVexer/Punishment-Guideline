@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vengeful Realms | Punishment Guidelines</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <img src="Vengefullogo.png" alt="Vengeful Realms Logo" class="logo" onerror="this.style.display='none'">
+      <div>
+        <h1>Vengeful Realms</h1>
+        <p>Staff Punishment Guidelines</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="notice intro-panel">
+      <h2>Staff Guidance</h2>
+      <p>These punishment levels are guidelines and do not guarantee a fixed outcome. Staff should consider severity, evidence, intent, prior history, cooperation, impact on others, and any aggravating or mitigating circumstances.</p>
+      <p>Punishment stages may be skipped where conduct is severe, deliberate, repeated, malicious, or presents a risk to the server or community.</p>
+    </section>
+
+    <section class="controls-panel">
+      <div class="control-group search-group">
+        <label for="searchInput">Search offences</label>
+        <input id="searchInput" type="search" placeholder="Search by offence, category, punishment or note...">
+      </div>
+      <div class="control-group">
+        <label for="categoryFilter">Category</label>
+        <select id="categoryFilter"><option value="all">All categories</option></select>
+      </div>
+      <div class="control-group">
+        <label for="tierFilter">Punishment tier</label>
+        <select id="tierFilter"><option value="all">All punishment tiers</option></select>
+      </div>
+      <button id="clearFilters" type="button">Clear Filters</button>
+    </section>
+
+    <section class="legend-section">
+      <h2>Punishment Tiers</h2>
+      <div class="legend-grid">
+        <div class="legend-item"><span class="tier-dot non-staff"></span><div><strong>Non-Staff Issue</strong><small>Normally handled through roleplay or player choice.</small></div></div>
+        <div class="legend-item"><span class="tier-dot standard"></span><div><strong>Standard Escalation</strong><small>Warn → Kick → Temporary Ban → Permanent Ban</small></div></div>
+        <div class="legend-item"><span class="tier-dot instant-kick"></span><div><strong>Immediate Escalation</strong><small>Instant Kick → Temporary Ban → Permanent Ban</small></div></div>
+        <div class="legend-item"><span class="tier-dot instant-ban"></span><div><strong>Instant Ban</strong><small>Immediate temporary or permanent removal.</small></div></div>
+        <div class="legend-item"><span class="tier-dot character-delete"></span><div><strong>Character Deletion</strong><small>Character may be removed, alongside further punishment.</small></div></div>
+        <div class="legend-item"><span class="tier-dot special"></span><div><strong>Special Case</strong><small>Requires strong evidence and senior review.</small></div></div>
+      </div>
+    </section>
+
+    <section class="results-section">
+      <div class="results-heading">
+        <div>
+          <h2>Offence Guidelines</h2>
+          <p id="resultCount">0 offences shown</p>
+        </div>
+        <button id="expandAll" type="button">Expand All</button>
+      </div>
+      <div id="offenceList" class="offence-list"></div>
+      <div id="emptyState" class="empty-state" hidden>
+        <h3>No matching offences</h3>
+        <p>Try a different search term or clear the filters.</p>
+      </div>
+    </section>
+
+    <section class="notice final-note">
+      <h2>Final Staff Note</h2>
+      <p>The intent and spirit of the rules take priority over technical loopholes. Staff may use discretion where conduct is clearly harmful to roleplay, community safety, server integrity, or the player experience.</p>
+    </section>
+  </main>
+
+  <footer>Vengeful Realms Staff Punishment Guidelines</footer>
+  <script src="script.js"></script>
+</body>
+</html>
