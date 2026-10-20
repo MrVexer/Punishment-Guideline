@@ -178,3 +178,27 @@ footer { padding:24px 16px 34px; text-align:center; color:var(--gold-muted); }
     align-items: stretch;
   }
 }
+
+/* Administrator Delete Guideline Button */
+
+.guideline-delete-btn {
+  margin: 12px 0 0 10px;
+  padding: 10px 16px;
+  color: #ffb3b3;
+  background: rgba(120, 15, 15, .45);
+  border: 1px solid #a83a3a;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.guideline-delete-btn:hover {
+  color: #fff;
+  background: #8b1e1e;
+  border-color: #ff7777;
+}
+
+.guideline-delete-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
