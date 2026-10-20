@@ -532,3 +532,10 @@ refreshStaffSession = async function() {
 
 // Check the existing login session after the editor is ready.
 refreshStaffSession();
+
+// Automatically load guidelines when the website opens.
+(async function initializeGuidelines() {
+  await loadGuidelines();
+  await refreshStaffSession();
+  render();
+})();
