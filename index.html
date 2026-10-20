@@ -69,6 +69,53 @@
     </button>
   </div>
 </section>
+
+<!-- Guideline Editor -->
+<dialog id="guidelineDialog" class="guideline-editor">
+  <form id="guidelineForm">
+    <h2 id="editorTitle">Add New Guideline</h2>
+
+    <div class="editor-field">
+      <label for="editorOffence">Offence Name</label>
+      <input id="editorOffence" type="text"
+             maxlength="200" required>
+    </div>
+
+    <div class="editor-field">
+      <label for="editorCategory">Category</label>
+      <select id="editorCategory" required></select>
+    </div>
+
+    <div class="editor-field">
+      <label for="editorTier">Punishment Tier</label>
+      <select id="editorTier" required></select>
+    </div>
+
+    <div class="editor-field">
+      <label for="editorPunishment">
+        Recommended Punishment
+      </label>
+      <textarea id="editorPunishment"
+                required></textarea>
+    </div>
+
+    <div class="editor-field">
+      <label for="editorNotes">Staff Notes</label>
+      <textarea id="editorNotes"></textarea>
+    </div>
+
+    <p id="editorMessage" role="status"></p>
+
+    <div class="editor-actions">
+      <button id="cancelEditor" type="button">
+        Cancel
+      </button>
+      <button id="saveGuideline" type="submit">
+        Save Guideline
+      </button>
+    </div>
+  </form>
+</dialog>
     
     <section class="results-section">
       <div class="results-heading">
