@@ -149,6 +149,39 @@
     </div>
   </form>
 </dialog>
+
+   <!-- Staff Change History -->
+<section id="historySection" class="history-section" hidden>
+  <div class="history-heading">
+    <div>
+      <h2>Staff Change History</h2>
+      <p>Guideline changes made by Enforcement staff.</p>
+    </div>
+
+    <button id="toggleHistory" type="button">
+      View Change History
+    </button>
+  </div>
+
+  <div id="historyContent" hidden>
+    <div class="history-controls">
+      <select id="historyActionFilter">
+        <option value="all">All Changes</option>
+        <option value="INSERT">Added Guidelines</option>
+        <option value="UPDATE">Edited Guidelines</option>
+        <option value="DELETE">Deleted Guidelines</option>
+      </select>
+
+      <button id="refreshHistory" type="button">
+        Refresh History
+      </button>
+    </div>
+
+    <p id="historyStatus" role="status"></p>
+
+    <div id="historyList" class="history-list"></div>
+  </div>
+</section>
     
     <section class="results-section">
       <div class="results-heading">
