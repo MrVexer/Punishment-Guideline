@@ -517,6 +517,73 @@ render = function() {
     });
 
     details.appendChild(editButton);
+
+        // Administrator-only Delete Guideline button
+    if (staffRole === "admin") {
+      const deleteButton = document.createElement("button");
+
+      deleteButton.type = "button";
+      deleteButton.className = "guideline-delete-btn";
+      deleteButton.textContent = "Delete Guideline";
+
+      deleteButton.addEventListener("click", async () => {
+        const confirmed = confirm(
+          `Are you sure you want to permanently delete "${item.offence}"?\n\nThis action cannot be undone.`
+        );
+
+        if (!confirmed) return;
+
+        deleteButton.disabled = true;
+        deleteButton.textContent = "Deleting...";
+
+        try {
+          // Confirm the current user is still an administrator.
+          const { data: { user }, error: authError } =
+            await supabaseClient.auth.getUser();
+
+          if (authError || !user) {
+            throw new Error("Please log in again.");
+          }
+
+          const { data: staff, error: staffError } =
+            await supabaseClient
+              .from("staff_members")
+              .select("role")
+              .eq("user_id", user.id)
+              .maybeSingle();
+
+          if (staffError || staff?.role !== "admin") {
+            throw new Error("Administrator access required.");
+          }
+
+          const { data: deleted, error } =
+            await supabaseClient
+              .from("punishment_guidelines")
+              .delete()
+              .eq("id", item.id)
+              .select("id");
+
+          if (error) throw error;
+
+          if (!deleted?.length) {
+            throw new Error(
+              "The guideline was not deleted. Check your permissions."
+            );
+          }
+
+          await loadGuidelines();
+
+          alert(`"${item.offence}" has been deleted.`);
+
+        } catch (error) {
+          alert("Unable to delete guideline: " + error.message);
+          deleteButton.disabled = false;
+          deleteButton.textContent = "Delete Guideline";
+        }
+      });
+
+      details.appendChild(deleteButton);
+    }
   });
 };
 
