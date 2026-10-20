@@ -525,8 +525,10 @@ const originalRefreshStaffSession = refreshStaffSession;
 
 refreshStaffSession = async function() {
   await originalRefreshStaffSession();
+
+  // Rebuild the guideline cards after staff permissions load.
   render();
 };
 
-// Load live guidelines when the page opens.
-loadGuidelines();
+// Check the existing login session after the editor is ready.
+refreshStaffSession();
