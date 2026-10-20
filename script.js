@@ -652,3 +652,279 @@ refreshStaffSession();
   await refreshStaffSession();
   render();
 })();
+
+/* ===========================
+   STAFF CHANGE HISTORY
+=========================== */
+
+const historySection =
+  document.getElementById("historySection");
+
+const historyContent =
+  document.getElementById("historyContent");
+
+const toggleHistoryBtn =
+  document.getElementById("toggleHistory");
+
+const refreshHistoryBtn =
+  document.getElementById("refreshHistory");
+
+const historyActionFilter =
+  document.getElementById("historyActionFilter");
+
+const historyList =
+  document.getElementById("historyList");
+
+const historyStatus =
+  document.getElementById("historyStatus");
+
+let historyRecords = [];
+let historyOpen = false;
+
+function canViewHistory() {
+  return ["editor", "admin"].includes(staffRole);
+}
+
+function updateHistoryVisibility() {
+  const allowed = canViewHistory();
+
+  historySection.hidden = !allowed;
+
+  if (!allowed) {
+    historyOpen = false;
+    historyContent.hidden = true;
+    historyRecords = [];
+    historyList.replaceChildren();
+    toggleHistoryBtn.textContent = "View Change History";
+  }
+}
+
+async function loadChangeHistory() {
+  if (!canViewHistory()) return;
+
+  historyStatus.textContent = "Loading change history...";
+  refreshHistoryBtn.disabled = true;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("guideline_history")
+      .select(
+        "id, guideline_id, action, old_data, new_data, changed_by, changed_at"
+      )
+      .order("changed_at", { ascending: false })
+      .limit(200);
+
+    if (error) throw error;
+
+    historyRecords = data || [];
+    renderChangeHistory();
+
+  } catch (error) {
+    historyStatus.textContent =
+      "Unable to load history: " + error.message;
+
+  } finally {
+    refreshHistoryBtn.disabled = false;
+  }
+}
+
+function describeHistoryChange(entry) {
+  const oldData = entry.old_data || {};
+  const newData = entry.new_data || {};
+
+  if (entry.action === "INSERT") {
+    return [{
+      field: "Guideline",
+      before: "Not previously present",
+      after: newData.offence || "Unknown"
+    }];
+  }
+
+  if (entry.action === "DELETE") {
+    return [{
+      field: "Guideline",
+      before: oldData.offence || "Unknown",
+      after: "Deleted"
+    }];
+  }
+
+  const fields = [
+    ["offence", "Offence Name"],
+    ["category", "Category"],
+    ["tier", "Punishment Tier"],
+    ["punishment", "Recommended Punishment"],
+    ["notes", "Staff Notes"]
+  ];
+
+  return fields
+    .filter(([key]) => oldData[key] !== newData[key])
+    .map(([key, label]) => ({
+      field: label,
+      before: oldData[key] ?? "",
+      after: newData[key] ?? ""
+    }));
+}
+
+function makeHistoryText(tag, className, value) {
+  const element = document.createElement(tag);
+  element.className = className;
+  element.textContent = String(value);
+  return element;
+}
+
+function renderChangeHistory() {
+  historyList.replaceChildren();
+
+  const actionFilter = historyActionFilter.value;
+
+  const filtered = historyRecords.filter(entry =>
+    actionFilter === "all" || entry.action === actionFilter
+  );
+
+  historyStatus.textContent =
+    `${filtered.length} changes shown (latest 200 records).`;
+
+  if (!filtered.length) {
+    historyList.appendChild(
+      makeHistoryText(
+        "p",
+        "history-empty",
+        "No matching changes found."
+      )
+    );
+    return;
+  }
+
+  const actionLabels = {
+    INSERT: "Added",
+    UPDATE: "Edited",
+    DELETE: "Deleted"
+  };
+
+  filtered.forEach(entry => {
+    const card = document.createElement("article");
+    card.className = "history-card";
+
+    const header = document.createElement("div");
+    header.className = "history-card-header";
+
+    const action = makeHistoryText(
+      "span",
+      `history-action history-${entry.action.toLowerCase()}`,
+      actionLabels[entry.action] || entry.action
+    );
+
+    const offence =
+      entry.new_data?.offence ||
+      entry.old_data?.offence ||
+      "Unknown Guideline";
+
+    const title = makeHistoryText(
+      "h3",
+      "history-offence",
+      offence
+    );
+
+    const timestamp = entry.changed_at
+      ? new Date(entry.changed_at).toLocaleString()
+      : "Unknown date";
+
+    const staffId = entry.changed_by
+      ? entry.changed_by.slice(0, 8) + "..."
+      : "System / Unknown";
+
+    const details = makeHistoryText(
+      "p",
+      "history-meta",
+      `${timestamp} | Staff ID: ${staffId}`
+    );
+
+    header.append(action, title);
+    card.append(header, details);
+
+    const changes = describeHistoryChange(entry);
+
+    if (changes.length) {
+      const expand = document.createElement("details");
+      expand.className = "history-details";
+
+      const summary = document.createElement("summary");
+      summary.textContent = "View Changes";
+      expand.appendChild(summary);
+
+      changes.forEach(change => {
+        const changeBox = document.createElement("div");
+        changeBox.className = "history-change";
+
+        changeBox.appendChild(
+          makeHistoryText("h4", "", change.field)
+        );
+
+        changeBox.appendChild(
+          makeHistoryText(
+            "p",
+            "",
+            `Before: ${change.before}`
+          )
+        );
+
+        changeBox.appendChild(
+          makeHistoryText(
+            "p",
+            "",
+            `After: ${change.after}`
+          )
+        );
+
+        expand.appendChild(changeBox);
+      });
+
+      card.appendChild(expand);
+    }
+
+    historyList.appendChild(card);
+  });
+}
+
+toggleHistoryBtn.addEventListener("click", async () => {
+  if (!canViewHistory()) return;
+
+  historyOpen = !historyOpen;
+  historyContent.hidden = !historyOpen;
+
+  toggleHistoryBtn.textContent = historyOpen
+    ? "Hide Change History"
+    : "View Change History";
+
+  if (historyOpen) {
+    await loadChangeHistory();
+  }
+});
+
+refreshHistoryBtn.addEventListener(
+  "click",
+  loadChangeHistory
+);
+
+historyActionFilter.addEventListener(
+  "change",
+  renderChangeHistory
+);
+
+// Refresh history access after staff permissions are checked.
+const previousHistorySessionRefresh = refreshStaffSession;
+
+refreshStaffSession = async function() {
+  await previousHistorySessionRefresh();
+  updateHistoryVisibility();
+};
+
+// Recheck permissions on login and logout.
+supabaseClient.auth.onAuthStateChange(() => {
+  setTimeout(() => {
+    refreshStaffSession();
+  }, 0);
+});
+
+// Check permissions when the page first opens.
+refreshStaffSession();
