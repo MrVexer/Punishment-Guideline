@@ -679,6 +679,7 @@ const historyStatus =
   document.getElementById("historyStatus");
 
 let historyRecords = [];
+let staffDisplayNames = {};
 let historyOpen = false;
 
 function canViewHistory() {
@@ -717,7 +718,30 @@ async function loadChangeHistory() {
     if (error) throw error;
 
     historyRecords = data || [];
-    renderChangeHistory();
+
+// Retrieve display names for authorised staff.
+const { data: staffDirectory, error: directoryError } =
+  await supabaseClient
+    .from("staff_members")
+    .select("user_id, display_name");
+
+if (directoryError) {
+  console.warn(
+    "Unable to load staff names:",
+    directoryError.message
+  );
+}
+
+staffDisplayNames = {};
+
+(staffDirectory || []).forEach(member => {
+  if (member.display_name?.trim()) {
+    staffDisplayNames[member.user_id] =
+      member.display_name.trim();
+  }
+});
+
+renderChangeHistory();
 
   } catch (error) {
     historyStatus.textContent =
@@ -829,14 +853,17 @@ function renderChangeHistory() {
       ? new Date(entry.changed_at).toLocaleString()
       : "Unknown date";
 
-    const staffId = entry.changed_by
-      ? entry.changed_by.slice(0, 8) + "..."
-      : "System / Unknown";
+    const staffName = entry.changed_by
+  ? (
+      staffDisplayNames[entry.changed_by] ||
+      `Staff ID: ${entry.changed_by.slice(0, 8)}...`
+    )
+  : "System / Unknown";
 
     const details = makeHistoryText(
       "p",
       "history-meta",
-      `${timestamp} | Staff ID: ${staffId}`
+      `${timestamp} | ${staffName}`
     );
 
     header.append(action, title);
