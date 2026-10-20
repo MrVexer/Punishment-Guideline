@@ -55,3 +55,126 @@ h2,h3,p { margin-top:0; } h2 { color:var(--gold); }
 footer { padding:24px 16px 34px; text-align:center; color:var(--gold-muted); }
 @media(max-width:900px){ .controls-panel{grid-template-columns:1fr 1fr}.search-group{grid-column:1/-1}.legend-grid{grid-template-columns:1fr 1fr} }
 @media(max-width:620px){ .header-inner{flex-direction:column} main{width:100%;padding:18px 12px 30px}.controls-panel,.legend-grid,.detail-grid{grid-template-columns:1fr}.search-group{grid-column:auto}.results-heading{flex-direction:column;align-items:stretch}.offence-summary{grid-template-columns:1fr}.offence-summary-right{justify-content:space-between}.punishment-badge{white-space:normal} }
+
+/* ===========================
+   STAFF MANAGEMENT
+=========================== */
+
+.staff-controls {
+  border: 1px solid var(--gold-dark);
+  background: var(--panel);
+}
+
+.staff-controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.staff-controls-header h2 {
+  margin: 0;
+}
+
+.staff-controls button,
+.editor-actions button,
+.guideline-edit-btn {
+  padding: 10px 16px;
+  color: var(--gold);
+  background: rgba(70, 15, 15, .65);
+  border: 1px solid var(--gold-dark);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.staff-controls button:hover,
+.editor-actions button:hover,
+.guideline-edit-btn:hover {
+  background: rgba(215, 199, 150, .12);
+  border-color: var(--gold);
+}
+
+#staffStatus {
+  margin: 12px 0 0;
+  color: var(--gold-muted);
+}
+
+#staffEditorControls {
+  margin-top: 16px;
+}
+
+#addGuidelineBtn {
+  background: var(--burgundy);
+  border-color: var(--gold);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ===========================
+   GUIDELINE EDITOR
+=========================== */
+
+.guideline-editor {
+  max-width: 680px;
+  width: 100%;
+  padding: 25px;
+  background: #120606;
+  border: 2px solid var(--gold-dark);
+  border-radius: 12px;
+  color: var(--text);
+}
+
+.guideline-editor h2 {
+  color: var(--gold);
+}
+
+.editor-field {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 15px;
+}
+
+.editor-field label {
+  color: #C5B171;
+  font-weight: bold;
+}
+
+.editor-field input,
+.editor-field select,
+.editor-field textarea {
+  width: 100%;
+  padding: 12px;
+  color: var(--text);
+  background: var(--black);
+  border: 1px solid var(--gold-dark);
+  border-radius: 7px;
+  font: inherit;
+}
+
+.editor-field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.guideline-edit-btn {
+  margin-top: 12px;
+}
+
+@media (max-width: 620px) {
+  .staff-controls-header,
+  .editor-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
