@@ -82,5 +82,94 @@ function render(){
 }
 searchInput.addEventListener("input",render); categoryFilter.addEventListener("change",render); tierFilter.addEventListener("change",render);
 clearFilters.addEventListener("click",()=>{ searchInput.value=""; categoryFilter.value="all"; tierFilter.value="all"; render(); });
+
+/* ===========================
+   SUPABASE STAFF LOGIN
+=========================== */
+
+const staffLoginBtn =
+  document.getElementById("staffLoginBtn");
+
+const staffLogoutBtn =
+  document.getElementById("staffLogoutBtn");
+
+const staffStatus =
+  document.getElementById("staffStatus");
+
+const staffEditorControls =
+  document.getElementById("staffEditorControls");
+
+let staffRole = null;
+
+async function refreshStaffSession() {
+  const { data: { user }, error } =
+    await supabaseClient.auth.getUser();
+
+  staffRole = null;
+
+  if (!error && user) {
+    const { data: staff, error: roleError } =
+      await supabaseClient
+        .from("staff_members")
+        .select("role")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (!roleError && staff) {
+      staffRole = staff.role;
+    }
+  }
+
+  const isEditor =
+    staffRole === "editor" || staffRole === "admin";
+
+  staffLoginBtn.hidden = Boolean(user);
+  staffLogoutBtn.hidden = !user;
+  staffEditorControls.hidden = !isEditor;
+
+  staffStatus.textContent = !user
+    ? "Viewing as guest"
+    : isEditor
+      ? `Logged in as ${staffRole}`
+      : "Logged in - no editing permissions";
+}
+
+staffLoginBtn.addEventListener("click", async () => {
+  const email = prompt("Enter your staff email:");
+  if (!email) return;
+
+  const password = prompt("Enter your password:");
+  if (password === null) return;
+
+  const { error } =
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if (error) {
+    alert("Login failed: " + error.message);
+    return;
+  }
+
+  await refreshStaffSession();
+});
+
+staffLogoutBtn.addEventListener("click", async () => {
+  const { error } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    alert("Logout failed: " + error.message);
+    return;
+  }
+
+  await refreshStaffSession();
+});
+
+supabaseClient.auth.onAuthStateChange(() => {
+  setTimeout(refreshStaffSession, 0);
+});
+
+refreshStaffSession();
 expandAll.addEventListener("click",()=>{ allExpanded=!allExpanded; expandAll.textContent=allExpanded?"Collapse All":"Expand All"; render(); });
 populateFilters(); render();
