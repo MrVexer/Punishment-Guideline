@@ -202,3 +202,92 @@ footer { padding:24px 16px 34px; text-align:center; color:var(--gold-muted); }
   opacity: .5;
   cursor: not-allowed;
 }
+
+/* ===========================
+   VENGEFUL REALMS STAFF LOGIN
+=========================== */
+
+.staff-login-dialog {
+  width: min(440px, 92vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px;
+  color: var(--text);
+  background:
+    linear-gradient(145deg, #230909, #090302);
+  border: 2px solid var(--gold-dark);
+  border-radius: 12px;
+  box-shadow: 0 20px 70px rgba(0,0,0,.85);
+}
+
+.staff-login-dialog::backdrop {
+  background: rgba(0,0,0,.82);
+  backdrop-filter: blur(5px);
+}
+
+.staff-login-heading {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--gold-dark);
+}
+
+.staff-login-heading h2 {
+  margin: 0;
+  color: var(--gold);
+  font-size: 1.8rem;
+}
+
+.staff-login-heading p {
+  margin: 5px 0 0;
+  color: var(--gold-muted);
+  font-size: .9rem;
+}
+
+.staff-login-dialog input {
+  width: 100%;
+  padding: 12px;
+  color: var(--text);
+  background: var(--black);
+  border: 1px solid var(--gold-dark);
+  border-radius: 7px;
+  outline: none;
+}
+
+.staff-login-dialog input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(215,199,150,.14);
+}
+
+.staff-login-dialog button {
+  padding: 11px 20px;
+  color: var(--gold);
+  background: rgba(70,15,15,.65);
+  border: 1px solid var(--gold-dark);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.staff-login-dialog button:hover {
+  border-color: var(--gold);
+  background: rgba(215,199,150,.12);
+}
+
+.staff-login-dialog button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+#submitStaffLogin {
+  background: var(--burgundy);
+  border-color: var(--gold);
+}
+
+#staffLoginError {
+  color: #ff9999;
+  font-size: .9rem;
+}
+
+#staffLoginError:empty {
+  display: none;
+}
