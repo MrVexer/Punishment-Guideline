@@ -70,6 +70,39 @@
   </div>
 </section>
 
+<!-- Staff Login Window -->
+<dialog id="staffLoginDialog" class="staff-login-dialog">
+  <form id="staffLoginForm">
+    <div class="staff-login-heading">
+      <h2>Staff Login</h2>
+      <p>Vengeful Realms Enforcement</p>
+    </div>
+
+    <div class="editor-field">
+      <label for="staffEmail">Email Address</label>
+      <input id="staffEmail" type="email"
+             autocomplete="username" required>
+    </div>
+
+    <div class="editor-field">
+      <label for="staffPassword">Password</label>
+      <input id="staffPassword" type="password"
+             autocomplete="current-password" required>
+    </div>
+
+    <p id="staffLoginError" role="alert"></p>
+
+    <div class="editor-actions">
+      <button id="cancelStaffLogin" type="button">
+        Cancel
+      </button>
+      <button id="submitStaffLogin" type="submit">
+        Login
+      </button>
+    </div>
+  </form>
+</dialog>
+    
 <!-- Guideline Editor -->
 <dialog id="guidelineDialog" class="guideline-editor">
   <form id="guidelineForm">
