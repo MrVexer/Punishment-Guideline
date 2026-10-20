@@ -134,25 +134,71 @@ async function refreshStaffSession() {
       : "Logged in - no editing permissions";
 }
 
-staffLoginBtn.addEventListener("click", async () => {
-  const email = prompt("Enter your staff email:");
-  if (!email) return;
+/* ===========================
+   STAFF LOGIN WINDOW
+=========================== */
 
-  const password = prompt("Enter your password:");
-  if (password === null) return;
+const staffLoginDialog =
+  document.getElementById("staffLoginDialog");
 
-  const { error } =
-    await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
+const staffLoginForm =
+  document.getElementById("staffLoginForm");
 
-  if (error) {
-    alert("Login failed: " + error.message);
-    return;
+const staffEmail =
+  document.getElementById("staffEmail");
+
+const staffPassword =
+  document.getElementById("staffPassword");
+
+const staffLoginError =
+  document.getElementById("staffLoginError");
+
+const submitStaffLogin =
+  document.getElementById("submitStaffLogin");
+
+// Open the login window.
+staffLoginBtn.addEventListener("click", () => {
+  staffLoginForm.reset();
+  staffLoginError.textContent = "";
+  staffLoginDialog.showModal();
+});
+
+// Close the login window.
+document.getElementById("cancelStaffLogin")
+  .addEventListener("click", () => {
+    staffLoginDialog.close();
+  });
+
+// Submit login credentials.
+staffLoginForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  staffLoginError.textContent = "";
+  submitStaffLogin.disabled = true;
+  submitStaffLogin.textContent = "Logging in...";
+
+  try {
+    const { error } =
+      await supabaseClient.auth.signInWithPassword({
+        email: staffEmail.value.trim(),
+        password: staffPassword.value
+      });
+
+    if (error) throw error;
+
+    staffLoginDialog.close();
+    staffLoginForm.reset();
+
+    await refreshStaffSession();
+
+  } catch (error) {
+    staffLoginError.textContent =
+      "Login failed: " + error.message;
+
+  } finally {
+    submitStaffLogin.disabled = false;
+    submitStaffLogin.textContent = "Login";
   }
-
-  await refreshStaffSession();
 });
 
 staffLogoutBtn.addEventListener("click", async () => {
